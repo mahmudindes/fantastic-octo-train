@@ -1,0 +1,1118 @@
+openapi: 3.0.3
+info:
+  title: OrenoLink - DesuEngine
+  description: Go-based links manager backend (API).
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1
+tags:
+  - name: User
+  - name: Link
+servers:
+  - url: /api/v0
+paths:
+  /me:
+    get:
+      tags:
+        - User
+      summary: Get current user.
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: Current user gets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          $ref: '#/components/responses/Default'
+  /users:
+    get:
+      tags:
+        - User
+      summary: List user.
+      operationId: listUser
+      parameters:
+        - name: page
+          in: query
+          description: Page number of results.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Maximum number of results.
+          schema:
+            type: integer
+        - name: order_by
+          in: query
+          description: Order of results.
+          schema:
+            type: array
+            items:
+              type: string
+            #x-go-type-skip-optional-pointer: true
+        - name: username
+          in: query
+          description: Filter by user username.
+          schema:
+            type: array
+            items:
+              type: string
+            #x-go-type-skip-optional-pointer: true
+      responses:
+        '200':
+          description: User list.
+          headers:
+            X-Total-Count:
+              schema:
+                type: integer
+              description: The total count of results.
+            X-Pagination-Limit:
+              schema:
+                type: integer
+              description: The pagination limit of results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        default:
+          $ref: '#/components/responses/Default'
+    post:
+      tags:
+        - User
+      summary: Add user.
+      description: Use auth id token to bypass admin only user creation and ignore auth subject.
+      operationId: addUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+        required: true
+      responses:
+        '201':
+          description: User added.
+          headers:
+            Location:
+              description: The path of new user.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          $ref: '#/components/responses/Default'
+      security:
+        - BearerAuth: []
+  /users/{username}:
+    get:
+      tags:
+        - User
+      summary: Get user.
+      operationId: getUser
+      parameters:
+        - name: username
+          in: path
+          description: Username of user to return.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User gets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          $ref: '#/components/responses/Default'
+    patch:
+      tags:
+        - User
+      summary: Update user.
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: Username of user to update.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetUser'
+        required: true
+      responses:
+        '200':
+          description: User updated.
+          headers:
+            Location:
+              description: The path of updated user.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '204':
+          description: User unmodified.
+        default:
+          $ref: '#/components/responses/Default'
+      security:
+        - BearerAuth: []
+    delete:
+      tags:
+        - User
+      summary: Delete user.
+      operationId: deleteUser
+      parameters:
+        - name: username
+          in: path
+          description: Username of user to delete.
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted.
+        default:
+          $ref: '#/components/responses/Default'
+      security:
+        - BearerAuth: []
+  /links:
+    get:
+      tags:
+        - Link
+      summary: List link.
+      operationId: listLink
+      parameters:
+        - name: page
+          in: query
+          description: Page number of results.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Maximum number of results.
+          schema:
+            type: integer
+        - name: order_by
+          in: query
+          description: Order of results.
+          schema:
+            type: array
+            items:
+              type: string
+            #x-go-type-skip-optional-pointer: true
+        - name: code
+          in: query
+          description: Filter by link code.
+          schema:
+            type: array
+            items:
+              type: string
+            #x-go-type-skip-optional-pointer: true
+        - name: user_username
+          in: query
+          description: Filter by link user username.
+          schema:
+            type: array
+            items:
+              type: string
+            #x-go-type-skip-optional-pointer: true
+      responses:
+        '200':
+          description: link list.
+          headers:
+            X-Total-Count:
+              schema:
+                type: integer
+              description: The total count of results.
+            X-Pagination-Limit:
+              schema:
+                type: integer
+              description: The pagination limit of results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Link'
+        default:
+          $ref: '#/components/responses/Default'
+    post:
+      tags:
+        - Link
+      summary: Add link.
+      operationId: addLink
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewLink'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewLink'
+        required: true
+      responses:
+        '201':
+          description: Link added.
+          headers:
+            Location:
+              description: The path of new link.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Link'
+        default:
+          $ref: '#/components/responses/Default'
+      security:
+        - BearerAuth: []
+  /links/{code}:
+    get:
+      tags:
+        - Link
+      summary: Get link.
+      operationId: getLink
+      parameters:
+        - name: code
+          in: path
+          description: Code of link to return.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Link gets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Link'
+        default:
+          $ref: '#/components/responses/Default'
+    patch:
+      tags:
+        - Link
+      summary: Update link.
+      operationId: updateLink
+      parameters:
+        - name: code
+          in: path
+          description: Code of link to update.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetLink'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetLink'
+        required: true
+      responses:
+        '200':
+          description: Link updated.
+          headers:
+            Location:
+              description: The path of updated link.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Link'
+        '204':
+          description: Link unmodified.
+        default:
+          $ref: '#/components/responses/Default'
+      security:
+        - BearerAuth: []
+    delete:
+      tags:
+        - Link
+      summary: Delete link.
+      operationId: deleteLink
+      parameters:
+        - name: code
+          in: path
+          description: Code of link to delete.
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Link deleted.
+        default:
+          $ref: '#/components/responses/Default'
+      security:
+        - BearerAuth: []
+  /links/{code}/rules:
+    get:
+      tags:
+        - Link
+      summary: List link rule.
+      operationId: listLinkRule
+      parameters:
+        - name: code
+          in: path
+          description: Code of link.
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page number of results.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Maximum number of results.
+          schema:
+            type: integer
+        - name: order_by
+          in: query
+          description: Order of results.
+          schema:
+            type: array
+            items:
+              type: string
+            #x-go-type-skip-optional-pointer: true
+      responses:
+        '200':
+          description: Link rule list.
+          headers:
+            X-Total-Count:
+              schema:
+                type: integer
+              description: The total count of results.
+            X-Pagination-Limit:
+              schema:
+                type: integer
+              description: The pagination limit of results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LinkRule'
+        default:
+          $ref: '#/components/responses/Default'
+    post:
+      tags:
+        - Link
+      summary: Add link rule.
+      operationId: addLinkRule
+      parameters:
+        - name: code
+          in: path
+          description: Code of link.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewLinkRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewLinkRule'
+        required: true
+      responses:
+        '201':
+          description: Link rule added.
+          headers:
+            Location:
+              description: The path of new link rule.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkRule'
+        default:
+          $ref: '#/components/responses/Default'
+      security:
+        - BearerAuth: []
+  /links/{code}/rules/{rid}:
+    get:
+      tags:
+        - Link
+      summary: Get link rule.
+      operationId: getLinkRule
+      parameters:
+        - name: code
+          in: path
+          description: Code of link.
+          required: true
+          schema:
+            type: string
+        - name: rid
+          in: path
+          description: RID of link rule to return.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Link rule gets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkRule'
+        default:
+          $ref: '#/components/responses/Default'
+    patch:
+      tags:
+        - Link
+      summary: Update link rule.
+      operationId: updateLinkRule
+      parameters:
+        - name: code
+          in: path
+          description: Code of link.
+          required: true
+          schema:
+            type: string
+        - name: rid
+          in: path
+          description: RID of link rule to update.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetLinkRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetLinkRule'
+        required: true
+      responses:
+        '200':
+          description: Link rule updated.
+          headers:
+            Location:
+              description: The path of updated link rule.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkRule'
+        '204':
+          description: Link rule unmodified.
+        default:
+          $ref: '#/components/responses/Default'
+      security:
+        - BearerAuth: []
+    delete:
+      tags:
+        - Link
+      summary: Delete link rule.
+      operationId: deleteLinkRule
+      parameters:
+        - name: code
+          in: path
+          description: Code of link.
+          required: true
+          schema:
+            type: string
+        - name: rid
+          in: path
+          description: RID of link rule to delete.
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Link rule deleted.
+        default:
+          $ref: '#/components/responses/Default'
+      security:
+        - BearerAuth: []
+  /links/{code}/targets:
+    get:
+      tags:
+        - Link
+      summary: List link target.
+      operationId: listLinkTarget
+      parameters:
+        - name: code
+          in: path
+          description: Code of link to return.
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page number of results.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Maximum number of results.
+          schema:
+            type: integer
+        - name: order_by
+          in: query
+          description: Order of results.
+          schema:
+            type: array
+            items:
+              type: string
+            #x-go-type-skip-optional-pointer: true
+      responses:
+        '200':
+          description: Link target list.
+          headers:
+            X-Total-Count:
+              schema:
+                type: integer
+              description: The total count of results.
+            X-Pagination-Limit:
+              schema:
+                type: integer
+              description: The pagination limit of results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LinkTarget'
+        default:
+          $ref: '#/components/responses/Default'
+    post:
+      tags:
+        - Link
+      summary: Add link target.
+      operationId: addLinkTarget
+      parameters:
+        - name: code
+          in: path
+          description: Code of link.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewLinkTarget'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewLinkTarget'
+        required: true
+      responses:
+        '201':
+          description: Link target added.
+          headers:
+            Location:
+              description: The path of new link target.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkTarget'
+        default:
+          $ref: '#/components/responses/Default'
+      security:
+        - BearerAuth: []
+  /links/{code}/targets/{rid}:
+    get:
+      tags:
+        - Link
+      summary: Get link target.
+      operationId: getLinkTarget
+      parameters:
+        - name: code
+          in: path
+          description: Code of link.
+          required: true
+          schema:
+            type: string
+        - name: rid
+          in: path
+          description: RID of link target to return.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Link target gets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkTarget'
+        default:
+          $ref: '#/components/responses/Default'
+    patch:
+      tags:
+        - Link
+      summary: Update link target.
+      operationId: updateLinkTarget
+      parameters:
+        - name: code
+          in: path
+          description: Code of link.
+          required: true
+          schema:
+            type: string
+        - name: rid
+          in: path
+          description: RID of link target to update.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetLinkTarget'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetLinkTarget'
+        required: true
+      responses:
+        '200':
+          description: Link target updated.
+          headers:
+            Location:
+              description: The path of updated link target.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkTarget'
+        '204':
+          description: Link target unmodified.
+        default:
+          $ref: '#/components/responses/Default'
+      security:
+        - BearerAuth: []
+    delete:
+      tags:
+        - Link
+      summary: Delete link target.
+      operationId: deleteLinkTarget
+      parameters:
+        - name: code
+          in: path
+          description: Code of link.
+          required: true
+          schema:
+            type: string
+        - name: rid
+          in: path
+          description: RID of link target to delete.
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Link target deleted.
+        default:
+          $ref: '#/components/responses/Default'
+      security:
+        - BearerAuth: []
+components:
+  schemas:
+    Base0:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - createdAt
+    Base1:
+      type: object
+      properties:
+        rid:
+          type: string
+          x-go-name: RID
+      required:
+        - rid
+    User:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base0'
+        - type: object
+          properties:
+            username:
+              type: string
+            authSubject:
+              type: string
+              nullable: true
+          required:
+            - username
+    NewUser:
+      type: object
+      properties:
+        username:
+          type: string
+          x-oapi-codegen-extra-tags:
+            form: username
+        authSubject:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: authSubject
+        authIDToken:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: authIDToken
+        authIDTokenNonce:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: authIDTokenNonce
+      required:
+        - username
+    SetUser:
+      type: object
+      properties:
+        username:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: username
+        authSubject:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: authSubject
+        setNull:
+          type: array
+          items:
+            type: string
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            form: setNull,omitempty
+    Link:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base0'
+        - type: object
+          properties:
+            code:
+              type: string
+            passwordProtected:
+              type: boolean
+            userUsername:
+              type: string
+              nullable: true
+            rules:
+              type: array
+              items:
+                $ref: '#/components/schemas/LinkRule'
+            targets:
+              type: array
+              items:
+                $ref: '#/components/schemas/LinkTarget'
+          required:
+            - code
+            - passwordProtected
+    NewLink:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: code
+        password:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: password
+        userUsername:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: userUsername
+    SetLink:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: code
+        password:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: password
+        userUsername:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: userUsername
+        setNull:
+          type: array
+          items:
+            type: string
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            form: setNull,omitempty
+    LinkRule:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base0'
+        - $ref: '#/components/schemas/Base1'
+        - type: object
+          properties:
+            ipAddresses:
+              type: array
+              items:
+                type: string
+              nullable: true
+              x-go-name: IPAddresses
+            origins:
+              type: array
+              items:
+                type: string
+              nullable: true
+            languageTags:
+              type: array
+              items:
+                type: string
+              nullable: true
+    NewLinkRule:
+      type: object
+      properties:
+        ipAddresses:
+          type: array
+          items:
+            type: string
+          nullable: true
+          x-go-name: IPAddresses
+          x-oapi-codegen-extra-tags:
+            form: ipAddresses
+        origins:
+          type: array
+          items:
+            type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: origins
+        languageTags:
+          type: array
+          items:
+            type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: languageTags
+    SetLinkRule:
+      type: object
+      properties:
+        ipAddresses:
+          type: array
+          items:
+            type: string
+          nullable: true
+          x-go-name: IPAddresses
+          x-oapi-codegen-extra-tags:
+            form: ipAddresses
+        origins:
+          type: array
+          items:
+            type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: origins
+        languageTags:
+          type: array
+          items:
+            type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: languageTags
+        setNull:
+          type: array
+          items:
+            type: string
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            form: setNull,omitempty
+    LinkTarget:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base0'
+        - $ref: '#/components/schemas/Base1'
+        - type: object
+          properties:
+            ruleRID:
+              type: string
+              nullable: true
+            href:
+              type: string
+              x-go-name: HREF
+            hrefRaw:
+              type: string
+              x-go-name: HREFRaw
+            urlScheme:
+              type: string
+              nullable: true
+              x-go-name: URLScheme
+            urlSchemeRaw:
+              type: string
+              nullable: true
+              x-go-name: URLSchemeRaw
+            urlDomain:
+              type: string
+              nullable: true
+              x-go-name: URLDomain
+            urlDomainRaw:
+              type: string
+              nullable: true
+              x-go-name: URLDomainRaw
+            urlPath:
+              type: string
+              nullable: true
+              x-go-name: URLPath
+            urlPathRaw:
+              type: string
+              nullable: true
+              x-go-name: URLPathRaw
+            urlFragment:
+              type: string
+              nullable: true
+              x-go-name: URLFragment
+            urlFragmentRaw:
+              type: string
+              nullable: true
+              x-go-name: URLFragmentRaw
+          required:
+            - href
+            - hrefRaw
+    NewLinkTarget:
+      type: object
+      properties:
+        ruleRID:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: ruleRID
+        href:
+          type: string
+          nullable: true
+          x-go-name: HREF
+          x-oapi-codegen-extra-tags:
+            form: href
+        urlScheme:
+          type: string
+          nullable: true
+          x-go-name: URLScheme
+          x-oapi-codegen-extra-tags:
+            form: urlScheme
+        urlDomain:
+          type: string
+          nullable: true
+          x-go-name: URLDomain
+          x-oapi-codegen-extra-tags:
+            form: urlDomain
+        urlPath:
+          type: string
+          nullable: true
+          x-go-name: URLPath
+          x-oapi-codegen-extra-tags:
+            form: urlPath
+        urlFragment:
+          type: string
+          nullable: true
+          x-go-name: URLFragment
+          x-oapi-codegen-extra-tags:
+            form: urlFragment
+    SetLinkTarget:
+      type: object
+      properties:
+        ruleRID:
+          type: string
+          nullable: true
+          x-oapi-codegen-extra-tags:
+            form: ruleRID
+        href:
+          type: string
+          nullable: true
+          x-go-name: HREF
+          x-oapi-codegen-extra-tags:
+            form: href
+        urlScheme:
+          type: string
+          nullable: true
+          x-go-name: URLScheme
+          x-oapi-codegen-extra-tags:
+            form: urlScheme
+        urlDomain:
+          type: string
+          nullable: true
+          x-go-name: URLDomain
+          x-oapi-codegen-extra-tags:
+            form: urlDomain
+        urlPath:
+          type: string
+          nullable: true
+          x-go-name: URLPath
+          x-oapi-codegen-extra-tags:
+            form: urlPath
+        urlFragment:
+          type: string
+          nullable: true
+          x-go-name: URLFragment
+          x-oapi-codegen-extra-tags:
+            form: urlFragment
+        setNull:
+          type: array
+          items:
+            type: string
+          x-go-type-skip-optional-pointer: true
+          x-oapi-codegen-extra-tags:
+            form: setNull,omitempty
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+      required:
+        - statusCode
+        - message
+  responses:
+    Default:
+      description: Unexpected error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="48" height="48" version="1.1" viewBox="0 0 12.7 12.7" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="linearGradient43179-5" x1="154.33" x2="242.13" y1="119.21" y2="230.99" gradientTransform="matrix(.045925 0 0 .070132 1.9594 -12.7)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#808080" offset="0"/>
+      <stop stop-color="#808080" stop-opacity="0" offset="1"/>
+    </linearGradient>
+  </defs>
+  <g transform="matrix(1.0695 0 0 1.0695 -8.2213 .93562)">
+    <path d="m13.622-0.19539a5.7073 5.2578 0 0 0-5.7073 5.2577 5.7073 5.2578 0 0 0 5.7073 5.2578 5.7073 5.2578 0 0 0 3.6114-1.1869l2.0996 0.62146-0.4092-2.7542a5.7073 5.2578 0 0 0 0.40552-1.9382 5.7073 5.2578 0 0 0-5.7074-5.2577z" fill="url(#linearGradient43179-5)" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width=".2145" style="paint-order:normal"/>
+  </g>
+  <text x="2.0792327" y="9.4118862" fill="#000000" font-family="sans-serif" font-size="7.7464px" stroke-width=".16625" style="line-height: 1.25; white-space: pre;"><tspan x="2.0792327" y="9.4118862" font-family="Impact" font-size="7.7464px" font-weight="bold" stroke-width=".16625">B</tspan></text>
+  <text transform="scale(.98959 1.0105)" x="6.3268056" y="9.4410667" fill="#1cd036" font-family="Impact" font-size="7.9875px" font-weight="bold" stroke-width=".17116" style="line-height: 1.25; white-space: pre;"><tspan x="6.3268056" y="9.4410667" fill="#1cd036" font-family="Impact" font-size="7.9875px" font-weight="bold" stroke-width=".17116">C</tspan></text>
+  <text style="white-space: pre; fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 0.4px;" x="29.005" y="5.324">Enter your text here</text>
+</svg>

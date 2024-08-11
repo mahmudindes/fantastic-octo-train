@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.scrollbar {
+	&::-webkit-scrollbar {
+		@apply h-2 w-2 bg-inherit;
+	}
+	&:hover {
+		&::-webkit-scrollbar {
+			@apply bg-slate-200;
+		}
+		&::-webkit-scrollbar-thumb {
+			@apply bg-slate-500;
+		}
+	}
+}
+
+.card-image {
+	@apply flex items-center justify-center overflow-hidden;
+	& img {
+		@apply shrink-0;
+	}
+}
+
+.card-image-loaded {
+	@apply min-h-full min-w-full;
+}
+
+.card-title {
+	@apply truncate hover:overflow-visible hover:whitespace-normal;
+}
