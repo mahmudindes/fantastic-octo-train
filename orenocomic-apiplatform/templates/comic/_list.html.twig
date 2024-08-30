@@ -1,0 +1,21 @@
+{% if resultComics %}
+    <style>
+        @media (max-width: 415.98px) {
+            .list-card {
+                --comic-card-h: 192px;
+                --comic-card-cover-w: 144px;
+                --comic-card-synopsis-h: 124px;
+            }
+        }
+    </style>
+
+    <div class="row row-cols-1 row-cols-lg-2 g-3">
+        {% for comic in resultComics %}
+            <div class="col list-card">
+                {{ include('comic/_list_card.html.twig') }}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    {{ include('comic/_no_comic.html.twig') }}
+{% endif %}

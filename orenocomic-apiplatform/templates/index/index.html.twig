@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }}: Comic Catalog{% endblock %}
+
+{% block main %}
+    <div class="d-flex flex-column justify-content-center bg-info-subtle" style="height: 96px;">
+        <h2 class="align-self-center">Comic Catalog</h2>
+    </div>
+
+    <div class="d-flex flex-column p-4 gap-4">
+        {{ include('comic/_style.html.twig') }}
+
+        <div class="d-flex flex-row px-1">
+            <h3 class="fs-5 fw-semibold m-0 me-auto">New Comic</h3>
+            <a href="{{ path('app_comic_index') }}" class="text-decoration-none">More →</a>
+        </div>
+
+        {{ render(controller('App\\Controller\\ComicController::fragmentList', {
+            limit: 4,
+            page: 1,
+            order: 'createdAt'
+        })) }}
+    </div>
+{% endblock %}

@@ -1,0 +1,27 @@
+<div class="d-flex flex-column gap-2">
+    {% for comic in resultComics %}
+        {% set comic_href = path('app_comic_individual', {code: comic.code}) %}
+        <a href="{{ comic_href }}" class="d-flex align-items-center gap-2 text-decoration-none border">
+            {% set comic_title = comic.preferredTitle(app.request.languages) %}
+
+            {% set comic_cover = comic.preferredCover('') %}
+            <img
+                src="{{
+                    comic_cover
+                    ? '//' ~ comic_cover.link.websiteDomain ~ comic_cover.link.relativeURL
+                    : asset('images/comic-cover.jpg')
+                }}"
+                alt="{{ comic_title.title ?? 'Comic' }} Cover"
+                class="flex-shrink-0 object-fit-cover bg-dark"
+                style="height: 64px; width: 48px;"
+            >
+
+            <div class="flex-grow-1 overflow-hidden">
+                <h2 class="fs-6 text-truncate m-0">{{ comic_title.title ?? 'No Title' }}</h2>
+                <small class="link-body-emphasis">{{ comic.createdAt|date('j F Y') }}</small>
+            </div>
+        </a>
+    {% else %}
+        {{ include('comic/_no_comic.html.twig') }}
+    {% endfor %}
+</div>
